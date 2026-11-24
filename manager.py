@@ -1,9 +1,10 @@
-from tkinter import *
-from tkinter import ttk,messagebox
+from tkinter import BOTH, Frame, Tk
+
 from container import Container
+from login import Login, Registro
 
 class Manager(Tk):
-    def __int__(self,*args,**kwargs):
+    def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
         self.title("sistema de punto de venta")
         self.resizable(False,False)
@@ -13,21 +14,20 @@ class Manager(Tk):
         self.container.pack(fill=BOTH, expand=True)
         
         self.frames = {}
-        for i in (Container):
-            frame = i(self.container, self)
-            self.frames[i] = frame
-            
+        for frame_class in (Login, Registro, Container):
+            frame = frame_class(self.container, self)
+            self.frames[frame_class] = frame
+            frame.place(x=0, y=0, relwidth=1, relheight=1)
+
+        self.show_frame(Container)
+
     def show_frame(self, frame_class, user=None):
         frame = self.frames[frame_class]
-        
+
         if user is not None:
-            frame.set_User(user)
-        
-        frame.tkraise
-        
-    def main():
-        app = Manager
-        app.mainloop()
-        
-    if __name__ == "__main__":
-        main()
+            if frame_class is Container:
+                frame.user = user
+            else:
+                frame.logged_user = user
+
+        frame.tkraise()
